@@ -1,21 +1,31 @@
 package model;
 
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
 
-public class project {
+public class Project {
     
     private int id;
     private String name;
     private String description;
-    private Date createdAt;
-    private Date updateAt;
+    private List<Task> tasks;
+    private Date createAt;
+    private Date updateAt;  
+    private static final Logger LOG = Logger.getLogger(Project.class.getName());
 
-    public project(int id, String name, String description, Date createdAt, Date updateAt) {
+    public Project(int id, String name, String description, List<Task> tasks, Date createAt, Date updateAt) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.createdAt = createdAt;
+        this.tasks = tasks;
+        this.createAt = createAt;
         this.updateAt = updateAt;
+    }
+
+    public Project() {
+        this.createAt = new Date();
+        this.updateAt = new Date();
     }
 
     public int getId() {
@@ -42,12 +52,20 @@ public class project {
         this.description = description;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public List<Task> getTasks() {
+        return tasks;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 
     public Date getUpdateAt() {
@@ -60,8 +78,11 @@ public class project {
 
     @Override
     public String toString() {
-        return "project{" + "id=" + id + ", name=" + name + ", description=" + description + ", createdAt=" + createdAt + ", updateAt=" + updateAt + '}';
+        return name;
     }
-    
-    
+
+    public void add(Project project) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

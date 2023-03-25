@@ -15,8 +15,11 @@ public class TaskController {
     // salvar as tarefas no banco de dados
     public void save(Task task) {
         
-        String sql = "INSERT INTO tasks (idProject, name, description," +
-                "completed,"
+        String sql = "INSERT INTO tasks ("
+                + "idProject," 
+                + "name," 
+                + "description," 
+                + "completed,"
                 + "notes,"
                 + "deadline,"
                 + "createAt,"
