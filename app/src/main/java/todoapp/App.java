@@ -12,7 +12,7 @@ public class App {
         
         Connection c = ConnectionFactory.getConnection();
         
-        ConnectionFactory.closeConnection(c);
+        ConnectionFactory.closeConnection((com.mysql.jdbc.Connection) c);
         
         ProjectController projectController = new ProjectController();
         

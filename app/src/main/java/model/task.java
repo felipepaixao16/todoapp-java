@@ -1,6 +1,9 @@
 package model; 
 
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.swing.text.html.HTML.Tag;
 
 public class Task {
     
@@ -8,11 +11,20 @@ public class Task {
     private int idProject;
     private String name;
     private String description;
+    private byte status;
+    private List<Tag> tags;
     private String notes;
     private boolean isCompleted;
     private Date deadline;
     private Date createAt;
     private Date updateAt;
+    private static final Logger LOG = Logger.getLogger(Task.class.getName());
+    
+    public Task() {
+        this.isCompleted = false;
+        this.createAt = new Date();
+        this.updateAt = new Date();
+    }
 
     public Task(int id, int idProject, String name, String description, String notes, boolean isCompleted, Date deadline, Date createAt, Date updateAt) {
         this.id = id;
@@ -24,10 +36,6 @@ public class Task {
         this.deadline = deadline;
         this.createAt = createAt;
         this.updateAt = updateAt;
-    }
-    
-    public Task() {
-        this.createAt = new Date();
     }
 
     public int getId() {
@@ -61,6 +69,14 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    public byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(byte status) {
+        this.status = status;
+    }
 
     public String getNotes() {
         return notes;
@@ -69,6 +85,14 @@ public class Task {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+    
+    public Date getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(Date deadline) {
+        this.deadline = deadline;
+    }
 
     public boolean isIsCompleted() {
         return isCompleted;
@@ -76,14 +100,6 @@ public class Task {
 
     public void setIsCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
-    }
-
-    public Date getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(Date deadline) {
-        this.deadline = deadline;
     }
 
     public Date getCreateAt() {

@@ -37,7 +37,16 @@ public class ProjectController {
         } catch (SQLException ex) {
             throw new RuntimeException("Erro ao salvar a tarefa ", ex);
         } finally {
-            ConnectionFactory.closeConnection(connection, statement);
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fechar a conexão", ex);
+            }
         }
     }
    
@@ -71,7 +80,16 @@ public class ProjectController {
         } catch (SQLException ex) {
             throw new RuntimeException("Erro ao atualizar o projeto ", ex);
         } finally {
-            ConnectionFactory.closeConnection(connection, statement);
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fechar a conexão", ex);
+            }
         }
     }
     
@@ -103,12 +121,24 @@ public class ProjectController {
                 project.setCreateAt(resultSet.getDate("createAt"));
                 project.setUpdateAt(resultSet.getDate("updateAt"));
                 
-                project.add(project);
+                projects.add(project);
             }
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             throw new RuntimeException("Erro ao buscar os projetos ", ex);
         } finally {
-            ConnectionFactory.closeConnection(connection, statement, resultSet);
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fechar a conexão", ex);
+            }
         }
         
         //Lista de tarefas que foi criada e carregada do banco de dados
@@ -131,7 +161,16 @@ public class ProjectController {
         } catch (SQLException ex) {
             throw new RuntimeException("Erro ao deletar o projeto", ex);
         } finally {
-            ConnectionFactory.closeConnection(connection, statement);
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fechar a conexão", ex);
+            }
         }
     }
 }

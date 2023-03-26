@@ -1,7 +1,6 @@
 package controller;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,20 +30,31 @@ public class TaskController {
         try {
             connection = ConnectionFactory.getConnection();
             statement = connection.prepareStatement(sql);
+            
             statement.setInt(1, task.getIdProject());
             statement.setString(2, task.getName());
             statement.setString(3, task.getDescription());
-            statement.setBoolean(4, task.isIsCompleted());
+            statement.setByte(4, task.getStatus());
             statement.setString(5, task.getNotes());
-            statement.setDate(6, new Date(task.getCreateAt().getTime()));
-            statement.setDate(7, new Date(task.getCreateAt().getTime()));
-            statement.setDate(8, new Date(task.getUpdateAt().getTime()));
+            statement.setDate(6, new java.sql.Date(task.getDeadline().getTime()));
+            statement.setBoolean(7, task.isIsCompleted());
+            statement.setDate(8, new java.sql.Date(task.getCreateAt().getTime()));
+            statement.setDate(9, new java.sql.Date(task.getUpdateAt().getTime()));
             statement.execute();    
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             throw new RuntimeException("Erro ao salvar a tarefa "
                     + ex.getMessage(), ex);
         } finally {
-            ConnectionFactory.closeConnection(connection, statement);
+             try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fechar a conexão", ex);
+            }
         }
         
     }
@@ -76,19 +86,151 @@ public class TaskController {
             statement.setInt(1, task.getIdProject());
             statement.setString(2, task.getName());
             statement.setString(3, task.getDescription());
-            statement.setString(4, task.getNotes());
-            statement.setBoolean(5, task.isIsCompleted());
-            statement.setDate(6, new Date(task.getDeadline().getTime()));
-            statement.setDate(7, new Date(task.getCreateAt().getTime()));
-            statement.setDate(8, new Date(task.getUpdateAt().getTime()));
-            statement.setInt(9, task.getId());
+            statement.setByte    (4, task.getStatus());
+            statement.setString(5, task.getNotes());
+            statement.setDate(6, new java.sql.Date(task.getDeadline().getTime()));
+            statement.setBoolean(7, task.isIsCompleted());
+            statement.setDate(8, new java.sql.Date(task.getCreateAt().getTime()));
+            statement.setDate(9, new java.sql.Date(task.getUpdateAt().getTime()));
+            statement.setInt(10, task.getId());
+            
             statement.execute();  
-        } catch (Exception ex) { 
+        } catch (SQLException ex) { 
             throw new RuntimeException("Erro ao atualizar a tarefa " + ex.getMessage(), ex);
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fechar a conexão", ex);
+            }
         }
     }
     
-    public void removeById(int taskID) throws SQLException {
+    public List<Task> getAll(int idProject) {
+        
+        String sql = "SELECT * FROM tasks WHERE idProject = ?";
+        
+         //Lista de tarefas que será devolvida quando a chamada do método acontecer
+        List<Task> tasks = new ArrayList<Task>();
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        //Classe que vai recuperar os dados do banco de dados
+        ResultSet resultSet = null;
+        
+        try {
+            //Criação da conexão
+            connection = ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(sql);
+            //Valor retornado pela execução da query
+            resultSet = statement.executeQuery();
+        
+            
+            /*Enquanto houverem valores a serem percorridos no meu resultSet*/
+            while(resultSet.next()){
+                
+                Task task = new Task();  
+                task.setId(resultSet.getInt("id"));
+                task.setIdProject(resultSet.getInt("idProject"));
+                task.setName(resultSet.getString("name"));
+                task.setDescription(resultSet.getString("description"));
+                task.setStatus(resultSet.getByte("status"));
+                task.setNotes(resultSet.getString("notes"));
+                task.setDeadline(resultSet.getDate("deadline"));
+                task.setIsCompleted(resultSet.getBoolean("completed"));
+                task.setCreateAt(resultSet.getDate("createAt"));
+                task.setUpdateAt(resultSet.getDate("updateAt"));
+                
+                tasks.add(task);
+            }
+            
+        } catch (Exception ex) {
+            throw new RuntimeException("Erro ao inserir a tarefa " + ex.getMessage(), ex);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fechar a conexão", ex);
+            }
+        }
+        
+        //Lista de tarefas que foi criada e carregada do banco de dados
+        return tasks;
+    }
+    
+    public List<Task> getByProjectId(int id) {
+        String sql = "SELECT * FROM tasks where idProject = ?";
+
+        List<Task> tasks = new ArrayList<>();
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        //Classe que vai recuperar os dados do banco de dados
+        ResultSet resultSet = null;
+
+        try {
+            connection = ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(sql);
+
+            statement.setInt(1, id);
+
+            resultSet = statement.executeQuery();
+
+            //Enquanto existir dados no banco de dados, fa�a
+            while (resultSet.next()) {
+
+                Task task = new Task();
+
+                task.setId(resultSet.getInt("id"));
+                task.setIdProject(resultSet.getInt("idProject"));
+                task.setName(resultSet.getString("name"));
+                task.setDescription(resultSet.getString("description"));
+                task.setStatus(resultSet.getByte("status"));
+                task.setNotes(resultSet.getString("notes"));
+                task.setDeadline(resultSet.getDate("deadline"));
+                task.setIsCompleted(resultSet.getBoolean("completed"));
+                task.setCreateAt(resultSet.getDate("createAt"));
+                task.setCreateAt(resultSet.getDate("updateAt"));
+
+                //Adiciono o contato recuperado, a lista de contatos
+                tasks.add(task);
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Erro ao buscar as tarefas", ex);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fechar a conexão", ex);
+            }
+        }
+        return tasks;
+    }
+    
+    public void removeById(int id) throws SQLException {
         String sql = "DELETE FROM tasks WHERE id = ?";
         
         Connection connection = null;
@@ -100,62 +242,23 @@ public class TaskController {
             //Preparando a query
             statement = connection.prepareStatement(sql);
             //Setando os valores
-            statement.setInt(1, taskID);
+            statement.setInt(1, id);
             //Executando a query
             statement.execute();
             
-        } catch (SQLException e) {
-            throw new SQLException("Erro ao deletar a tarefa");
+        } catch (SQLException ex) {
+            throw new SQLException("Erro ao deletar a tarefa", ex);
         } finally {
-            ConnectionFactory.closeConnection(connection);
-        }
-    }
-    
-    public List<Task> getAll(int idProject) {
-        
-        String sql = "SELECT * FROM tasks WHERE idProject = ?";
-        
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        
-        //Lista de tarefas que será devolvida quando a chamada do método acontecer
-        List<Task> tasks = new ArrayList<Task>();
-        
-        try {
-            //Criação da conexão
-            connection = ConnectionFactory.getConnection();
-            statement = connection.prepareStatement(sql);
-            //Setando o valor que corresponde ao filtro de busca
-            statement.setInt(1, idProject);
-            //Valor retornado pela execução da query
-            resultSet = statement.executeQuery();
-        
-            
-            /*Enquanto houverem valores a serem percorridos no meu resultSet*/
-            while(resultSet.next()){
-                
-                Task task = new Task();
-                task.setId(resultSet.getInt("id"));
-                task.setIdProject(resultSet.getInt("idProject"));
-                task.setName(resultSet.getString("name"));
-                task.setDescription(resultSet.getString("description"));
-                task.setNotes(resultSet.getString("notes"));
-                task.setIsCompleted(resultSet.getBoolean("completed"));
-                task.setDeadline(resultSet.getDate("deadline"));
-                task.setCreateAt(resultSet.getDate("createAt"));
-                task.setUpdateAt(resultSet.getDate("updateAt"));
-                
-                tasks.add(task);
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fechar a conexão", ex);
             }
-            
-        } catch (Exception ex) {
-            throw new RuntimeException("Erro ao inserir a tarefa " + ex.getMessage(), ex);
-        } finally {
-            ConnectionFactory.closeConnection(connection, statement, resultSet);
         }
-        
-        //Lista de tarefas que foi criada e carregada do banco de dados
-        return tasks;
     }
 }
