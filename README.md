@@ -62,14 +62,14 @@ Data de Criação
 Data de Atualização
 
 
-#Telas
-##Tela principal
+# Telas
+## Tela principal
 ![1](https://user-images.githubusercontent.com/95901427/227792890-be95c638-2944-494e-a651-12777f8a2f8e.png)
 
-##Tela de cadastro de projetos
+## Tela de cadastro de projetos
 ![2](https://user-images.githubusercontent.com/95901427/227792907-9a4ae011-829d-4bc5-b371-020915f33e26.png)
 
-##Tela de cadastro de tarefa
+## Tela de cadastro de tarefa
 ![5](https://user-images.githubusercontent.com/95901427/227792921-e6f3162b-4999-47d2-b71e-a3a2ed370f3c.png)
 
 ![6](https://user-images.githubusercontent.com/95901427/227792927-34b5e46f-f341-491d-979e-183e76296c64.png)
