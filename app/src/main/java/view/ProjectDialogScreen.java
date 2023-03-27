@@ -1,6 +1,6 @@
 package view;
 
-import controller.ProjectController;
+import controller.ProjectDAO;
 import javax.swing.JOptionPane;
 import model.Project;
 
@@ -10,7 +10,7 @@ import model.Project;
  */
 public class ProjectDialogScreen extends javax.swing.JDialog {
 
-    ProjectController projectController;
+    ProjectDAO projectDAO;
 
     public ProjectDialogScreen(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -149,7 +149,7 @@ public class ProjectDialogScreen extends javax.swing.JDialog {
             project.setName(jTextFieldName.getText());
             project.setDescription(jTextAreaDescription.getText());
 
-            projectController.save(project);
+            projectDAO.save(project);
 
             JOptionPane.showMessageDialog(rootPane, "Projeto salva com sucesso");
             dispose();
@@ -214,7 +214,7 @@ public class ProjectDialogScreen extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void initDataAccessObjects() {
-        projectController = new ProjectController();
+        projectDAO = new ProjectDAO();
     }
 
     private void centralizeProjectDialogScreen() {
